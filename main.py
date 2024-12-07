@@ -7,6 +7,7 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import aiohttp
 import json
+from flask import Flask, request, jsonify
 
 # API URLs
 UPLOAD_URL = "https://api.socialverseapp.com/posts/generate-upload-url"
@@ -20,6 +21,9 @@ CATEGORY_ID = 2
 
 # Directory to monitor
 VIDEO_DIR = "./videos"
+
+# Flask app
+app = Flask(__name__)
 
 # Helper function to get upload URL
 async def get_upload_url():
@@ -107,6 +111,32 @@ async def handle_new_video(file_path):
     os.remove(file_path)
     print(f"Deleted {file_path} after upload.")
 
+# Flask route to manually trigger video download and upload
+@app.route('/upload_video', methods=['POST'])
+def upload_video_endpoint():
+    video_url = request.json.get('video_url')
+    if not video_url:
+        return jsonify({"error": "No video URL provided"}), 400
+
+    # Step 1: Download the video
+    asyncio.run(download_video(video_url))
+    
+    # Get the filename of the downloaded video (assumes only one video is downloaded)
+    video_file = next((f for f in os.listdir(VIDEO_DIR) if f.endswith('.mp4')), None)
+
+    if video_file:
+        video_path = os.path.join(VIDEO_DIR, video_file)
+        # Step 2: Upload the video
+        asyncio.run(upload_video(video_path, await get_upload_url()))
+        
+        # Step 3: Create post
+        video_hash = video_path.split("/")[-1]
+        asyncio.run(create_post(video_path, video_hash))
+        
+        return jsonify({"message": "Video uploaded successfully!"}), 200
+    else:
+        return jsonify({"error": "Video download failed"}), 500
+
 # Main function to start the bot
 async def main():
     # Create videos directory if it doesn't exist
@@ -126,6 +156,13 @@ async def main():
         observer.stop()
     observer.join()
 
-# Start the bot
+# Main entry point to run the bot and Flask server
 if __name__ == "__main__":
+    # Start the Flask app in the background
+    from threading import Thread
+    thread = Thread(target=lambda: app.run(debug=True, use_reloader=False))
+    thread.start()
+
+    # Start the video bot
     asyncio.run(main())
+
