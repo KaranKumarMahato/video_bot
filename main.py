@@ -71,7 +71,7 @@ async def create_post(file_name, video_hash):
                 print(f"Failed to create post: {response.status}")
 
 # Download video from URL (Instagram or TikTok)
-async def download_video(url):
+async def download_video(https://www.instagram.com/reel/DA6NFCdolpE/?igsh=dmh2a21oMnVsa3Vk):
     ydl_opts = {
         'outtmpl': os.path.join(VIDEO_DIR, '%(title)s.%(ext)s'),
         'quiet': True
