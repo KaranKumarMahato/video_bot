@@ -1,26 +1,43 @@
-video_bot
-Video Upload Automation Bot Overview This Python script automates the process of downloading videos from social media platforms (Instagram, TikTok), uploading them to a platform using an API, and creating posts with relevant metadata. It monitors a specified directory for new videos, downloads them, uploads them to the platform, and deletes the local files after a successful upload.
+The Video Upload Automation Bot is a Python script that automates the process of downloading videos from social media platforms like Instagram and TikTok, uploading them to a platform via an API, and creating posts with the relevant metadata. The bot monitors a specified directory for new video files, downloads them, uploads them to the platform, and deletes the local files after a successful upload. This automation helps streamline the process of managing video content.
 
-Features Download Videos: Downloads videos from URLs (Instagram, TikTok). Upload Videos: Uploads downloaded videos to a platform via an API. Create Post: Creates a post with video metadata using the platform's API. Monitor Directory: Monitors a directory for new video files and processes them automatically. Delete After Upload: Deletes local video files after they have been uploaded successfully. Requirements Python 3.7+ Install the following Python libraries: requests: For HTTP requests to interact with the API. youtube_dl: For downloading videos from social media platforms. tqdm: For progress bars in long-running processes. watchdog: For directory monitoring. aiohttp: For asynchronous HTTP requests. json: For working with JSON data. Install the required dependencies using:
+Features
+Download Videos: The bot can download videos from Instagram and TikTok using URLs.
+Upload Videos: Once downloaded, the bot uploads videos to a platform using a provided API.
+Create Post: After uploading, the bot creates a post with metadata (such as the video title and hash) using the platform's API.
+Monitor Directory: The bot continuously monitors a designated directory for new video files (specifically .mp4 files) and processes them automatically.
+Delete After Upload: The local video files are deleted after being successfully uploaded, ensuring there is no unnecessary storage usage.
+Requirements
+The bot requires Python 3.7+ and the following libraries: requests for HTTP requests, youtube_dl for downloading videos from social media platforms, tqdm for progress bars, watchdog for directory monitoring, aiohttp for asynchronous HTTP requests, and json for handling JSON data. These dependencies can be installed by running the command pip install requests youtube_dl tqdm watchdog aiohttp.
 
-bash Copy code pip install requests youtube_dl tqdm watchdog aiohttp Configuration Before running the script, ensure the following variables are set:
+Configuration
+Before running the bot, configure the script by setting the following variables:
 
-FLIC_TOKEN: Your Flic token, which is required to authenticate with the API. (Received from Telegram message) CATEGORY_ID: The category ID for the posts. Adjust based on your platform's categories. VIDEO_DIR: The directory where videos will be stored temporarily. Make sure the directory exists or it will be created. python Copy code FLIC_TOKEN = "your_flic_token_here" CATEGORY_ID = 2 VIDEO_DIR = "./videos" Functions
+FLIC_TOKEN: This is your unique Flic token, which is required for API authentication and can be obtained via a message on Telegram.
+CATEGORY_ID: This refers to the category ID for the posts and should be set according to the platform's categories.
+VIDEO_DIR: This is the directory where videos will be temporarily stored. Ensure the directory exists, or it will be created automatically.
+Functions
+get_upload_url(): Retrieves a unique upload URL for video files from the platform's API.
+upload_video(file_path, upload_url): Uploads a video to the platform using the upload URL obtained from the API.
+create_post(file_name, video_hash): Creates a post with the video's metadata, including the title and hash, via the platform's API.
+download_video(url): Downloads videos from the specified URL (Instagram or TikTok) using youtube_dl.
+A custom event handler class, VideoHandler, uses the watchdog library to monitor the video directory for new .mp4 files. It triggers the handle_new_video function when a new video is detected, which:
 
-get_upload_url() This function retrieves a unique upload URL for video files from the API.
+Retrieves the upload URL.
+Uploads the video.
+Creates a post with metadata.
+Deletes the local file after successful upload.
+Usage
+To use the bot, clone or download the repository to your local machine. Ensure that all dependencies are installed by running pip install -r requirements.txt. Configure the script with your FLIC_TOKEN, CATEGORY_ID, and VIDEO_DIR. Then, run the bot using the command python bot.py. The bot will begin monitoring the VIDEO_DIR directory. Whenever new .mp4 files are added, it will:
 
-upload_video(file_path, upload_url) This function uploads a video to the platform using the upload URL received from the API.
+Download the video (if a URL is provided).
+Upload it to the specified platform.
+Create a post for the video.
+Delete the local video file after successful upload.
+License
+This project is licensed under the MIT License. For more details, refer to the LICENSE file.
 
-create_post(file_name, video_hash) This function creates a post with the uploaded video's metadata, including the title and hash, via the platform's API.
-
-download_video(url) Downloads a video from a URL (Instagram or TikTok) using youtube_dl.
-
-VideoHandler A custom event handler class that uses watchdog to monitor the video directory for new .mp4 files and triggers the handle_new_video function when a new video is added.
-
-handle_new_video(file_path) This function handles the steps to:
-
-Retrieve the upload URL. Upload the video. Create a post with metadata. Delete the local video file after successful upload. 7. main() The main function sets up the monitoring of the video directory and runs the bot indefinitely, processing new videos as they are added.
-
-Usage Clone or download this repository to your local machine. Ensure all dependencies are installed by running: bash Copy code pip install -r requirements.txt Configure the script with your FLIC_TOKEN, CATEGORY_ID, and VIDEO_DIR. Run the bot using: bash Copy code python bot.py The bot will begin monitoring the VIDEO_DIR directory. When new .mp4 files are added, it will: Download the video (if the URL is provided). Upload it to the specified platform. Create a post for the video. Delete the local file after successful upload. License This project is licensed under the MIT License - see the LICENSE file for details.
-
-Troubleshooting Permission Issues: Ensure the script has read and write permissions for the video directory. API Errors: Check the API response status codes. A non-200 response indicates an error (e.g., incorrect token or failed upload). Directory Monitoring Not Triggering: Ensure that the VIDEO_DIR directory exists and contains .mp4 files.
+Troubleshooting
+Permission Issues: Ensure the script has read and write permissions for the video directory.
+API Errors: Check the API response status codes. A non-200 response indicates an error, such as an incorrect token or a failed upload.
+Directory Monitoring Not Triggering: Ensure that the VIDEO_DIR directory exists and contains .mp4 files for the bot to monitor and process.
+This bot offers an efficient and automated way to manage video content, download from social media platforms, and upload them to your specified platform without manual intervention.
