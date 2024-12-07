@@ -13,7 +13,7 @@ UPLOAD_URL = "https://api.socialverseapp.com/posts/generate-upload-url"
 CREATE_POST_URL = "https://api.socialverseapp.com/posts"
 
 # Set your Flic-Token (from Telegram message)
-FLIC_TOKEN = "<YOUR_TOKEN>"
+FLIC_TOKEN = "flic_a8f52323c513c7ff9243b2a295d0aa4f4804f8aab5c597f2563dc5354239e332"
 
 # Define the category id (adjust this based on your platform)
 CATEGORY_ID = 1
